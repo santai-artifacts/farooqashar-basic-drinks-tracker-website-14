@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drinks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f1a;
+      --surface: #161826;
+      --surface2: #1e2135;
+      --border: rgba(255,255,255,0.07);
+      --primary: #7c6df6;
+      --primary-dim: rgba(124,109,246,0.18);
+      --primary-border: rgba(124,109,246,0.35);
+      --text: #e0e2f0;
+      --muted: #6b6e87;
+      --danger: #ef6b6b;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 28px 20px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .h-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+    .h-date  { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    .count-pill {
+      background: var(--primary-dim);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── Sections ── */
+    .section { padding: 22px 20px 0; }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── Quick grid ── */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .quick-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 8px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      color: var(--text);
+      font-family: inherit;
+      transition: background 0.13s, border-color 0.13s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .quick-btn:hover { background: var(--surface2); border-color: rgba(255,255,255,0.13); }
+    .quick-btn:active { transform: scale(0.95); }
+    .quick-btn .q-emoji { font-size: 24px; line-height: 1; }
+    .quick-btn .q-label { font-size: 11px; font-weight: 500; color: var(--muted); }
+
+    /* ── Custom form toggle ── */
+    .add-custom-btn {
+      width: 100%;
+      margin-top: 12px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .add-custom-btn:hover { color: var(--primary); border-color: var(--primary-border); }
+
+    /* ── Custom form ── */
+    .custom-form {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+    .custom-form.open { display: block; animation: fadeDown 0.18s ease; }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    .form-field { flex: 1; }
+    .form-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+    }
+    .form-field input::placeholder { color: var(--muted); }
+    .form-field input:focus,
+    .form-field select:focus { border-color: var(--primary); }
+
+    .form-actions { display: flex; gap: 8px; }
+    .btn-primary {
+      flex: 1;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.18); }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 22px 0 0; }
+
+    /* ── Log list ── */
+    .log-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .log-info { flex: 1; min-width: 0; }
+    .log-name {
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .log-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .log-del {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.13s, background 0.13s, color 0.13s;
+      flex-shrink: 0;
+    }
+    .log-item:hover .log-del { opacity: 1; }
+    .log-del:hover { background: rgba(239,107,107,0.12); color: var(--danger); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 56px 24px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 44px; margin-bottom: 14px; }
+    .empty p { font-size: 14px; line-height: 1.6; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+      z-index: 50;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="h-title">Drinks</div>
+    <div class="h-date" id="dateLabel"></div>
+  </div>
+  <div class="count-pill" id="countPill">0 today</div>
+</header>
+
+<div class="section">
+  <div class="section-label">Quick Log</div>
+  <div class="quick-grid" id="quickGrid"></div>
+  <button class="add-custom-btn" onclick="toggleForm()">
+    <span style="font-size:16px">＋</span> Custom drink
+  </button>
+  <div class="custom-form" id="customForm">
+    <div class="form-row">
+      <div class="form-field" style="flex:2">
+        <label>Name</label>
+        <input id="cName" type="text" placeholder="e.g. Matcha latte" autocomplete="off" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Amount</label>
+        <input id="cAmount" type="number" placeholder="12" min="0" step="0.1" />
+      </div>
+      <div class="form-field">
+        <label>Unit</label>
+        <select id="cUnit">
+          <option value="oz">oz</option>
+          <option value="ml">ml</option>
+          <option value="cup">cup</option>
+          <option value="can">can</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-ghost" onclick="toggleForm()">Cancel</button>
+      <button class="btn-primary" onclick="submitCustom()">Log Drink</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section" style="padding-top:18px">
+  <div class="section-label">Today's Log</div>
+</div>
+
+<div id="logList"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const PRESETS = [
+    { name:'Water',   emoji:'💧', amount:8,  unit:'oz' },
+    { name:'Coffee',  emoji:'☕', amount:8,  unit:'oz' },
+    { name:'Beer',    emoji:'🍺', amount:12, unit:'oz' },
+    { name:'Wine',    emoji:'🍷', amount:5,  unit:'oz' },
+    { name:'Tea',     emoji:'🫖', amount:8,  unit:'oz' },
+    { name:'Soda',    emoji:'🥤', amount:12, unit:'oz' },
+    { name:'Juice',   emoji:'🧃', amount:8,  unit:'oz' },
+    { name:'Cocktail',emoji:'🍸', amount:4,  unit:'oz' },
+  ];
+
+  const EMOJI_MAP = Object.fromEntries(PRESETS.map(p => [p.name.toLowerCase(), p.emoji]));
+  function getEmoji(name) {
+    const n = name.toLowerCase();
+    for (const [k, e] of Object.entries(EMOJI_MAP)) if (n.includes(k)) return e;
+    return '🥛';
+  }
+
+  // Build quick grid
+  const grid = document.getElementById('quickGrid');
+  PRESETS.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'quick-btn';
+    b.innerHTML = `<span class="q-emoji">${p.emoji}</span><span class="q-label">${p.name}</span>`;
+    b.addEventListener('click', () => logDrink({ name: p.name, amount: p.amount, unit: p.unit }));
+    grid.appendChild(b);
+  });
+
+  // Date label
+  const today = new Date();
+  document.getElementById('dateLabel').textContent = today.toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric'
+  });
+
+  let drinks = [];
+
+  async function load() {
+    const date = today.toISOString().split('T')[0];
+    const res = await fetch(`/api/drinks?date=${date}`);
+    drinks = await res.json();
+    render();
+  }
+
+  function render() {
+    const list = document.getElementById('logList');
+    const n = drinks.length;
+    document.getElementById('countPill').textContent = n === 1 ? '1 drink' : `${n} today`;
+
+    if (!n) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🫗</div><p>Nothing logged yet.<br>Tap a button above to get started.</p></div>`;
+      return;
+    }
+
+    list.innerHTML = drinks.map(d => {
+      const t = new Date(d.logged_at).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+      const meta = d.amount ? `${d.amount} ${d.unit} · ${t}` : t;
+      return `<div class="log-item">
+        <div class="log-icon">${getEmoji(d.name)}</div>
+        <div class="log-info">
+          <div class="log-name">${esc(d.name)}</div>
+          <div class="log-meta">${meta}</div>
+        </div>
+        <button class="log-del" onclick="del(${d.id})" title="Remove">×</button>
+      </div>`;
+    }).join('');
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  async function logDrink(data) {
+    const res = await fetch('/api/drinks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const drink = await res.json();
+    drinks.unshift(drink);
+    render();
+    toast(`${getEmoji(data.name)} ${data.name} logged`);
+  }
+
+  async function del(id) {
+    await fetch(`/api/drinks/${id}`, { method: 'DELETE' });
+    drinks = drinks.filter(d => d.id !== id);
+    render();
+  }
+
+  function toggleForm() {
+    const f = document.getElementById('customForm');
+    f.classList.toggle('open');
+    if (f.classList.contains('open')) document.getElementById('cName').focus();
+  }
+
+  async function submitCustom() {
+    const name   = document.getElementById('cName').value.trim();
+    const amount = parseFloat(document.getElementById('cAmount').value);
+    const unit   = document.getElementById('cUnit').value;
+    if (!name) { document.getElementById('cName').focus(); return; }
+    await logDrink({ name, amount: isNaN(amount) ? null : amount, unit });
+    document.getElementById('cName').value = '';
+    document.getElementById('cAmount').value = '';
+    toggleForm();
+  }
+
+  document.getElementById('cName').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitCustom();
+  });
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  load();
+</script>
+</body>
+</html>

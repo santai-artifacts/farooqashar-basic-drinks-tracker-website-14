@@ -1,0 +1,6 @@
+{
+  "name": "drinks-tracker",
+  "scripts": {
+    "start": "bun run index.ts"
+  }
+}
